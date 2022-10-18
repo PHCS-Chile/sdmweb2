@@ -414,8 +414,12 @@ class EvaluacionController extends Controller
 
     public function reportarGrabacion(Request $request)
     {
-//        dd($request);
+//        dd($request);        
         $evaluacion = Evaluacion::find($request->modal_evaluacion_id);
+        if ($request->estadoGrabacion == "comentario") {
+            $evaluacion->comentario_estado = $request->comentario_estado;
+            $evaluacion->estado_id = 6;
+        }
         if ($request->estadoGrabacion == "inexistente") {
             $evaluacion->estado_conversacion = 9;
         }

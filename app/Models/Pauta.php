@@ -108,7 +108,7 @@ class Pauta extends Model
         6 => [
             ['grupo_id' => 1, 'nombre' => 'gestiones', 'opciones' => [551, 562, 573]],
             ['grupo_id' => 8, 'nombre' => 'resoluciones', 'opciones' => [552, 563, 574]],
-            ['grupo_id' => 9, 'nombre' => 'motivo', 'opciones' => [597]],
+            ['grupo_id' => 10, 'nombre' => 'motivo', 'opciones' => [597]],
             ['grupo_id' => 5, 'nombre' => 'tiposnegocio', 'opciones' => [598]],            
         ],
     ];

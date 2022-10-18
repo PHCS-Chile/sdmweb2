@@ -104,9 +104,8 @@ Versión 4
                 </td>
                 <td class="px-3 py-1 whitespace-nowrap">
                     <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full @if($evaluacion->estado_conversacion == 8) bg-green-100 text-green-800 @elseif(in_array($evaluacion->estado_conversacion, [9, 14, 15, 16])) bg-yellow-100 text-yellow-800 @else bg-gray-100 text-gray-800 @endif">
-                      {{$grabacionestados->firstWhere('id', $evaluacion->estado_conversacion)->name}}
+                      {{$grabacionestados->firstWhere('id', $evaluacion->estado_conversacion)->name . ($evaluacion->comentario_estado == "" ? "" : " - Comentada")}}
                     </span>
-
                 </td>
                 <td class="px-3 py-1 whitespace-nowrap">
                     @if($evaluacion->fecha_grabacion == NULL)
@@ -216,6 +215,11 @@ Versión 4
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M16 8l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M5 3a2 2 0 00-2 2v1c0 8.284 6.716 15 15 15h1a2 2 0 002-2v-3.28a1 1 0 00-.684-.948l-4.493-1.498a1 1 0 00-1.21.502l-1.13 2.257a11.042 11.042 0 01-5.516-5.517l2.257-1.128a1 1 0 00.502-1.21L9.228 3.683A1 1 0 008.279 3H5z" />
                             </svg>
                         </button>
+                        <button wire:click.prevent="render" wire:click="abrirModalCompletar('detalles', {{ $evaluacion->id }})" class="font-bold modal-open text-xs inline-flex items-center py-1 px-1 mx-0.5 my-0.5 transition-colors duration-150 text-blue-600 hover:text-white font-semibold bg-gray-50 hover:bg-blue-500 border border-blue-700 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 h-5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                            </svg>
+                        </button>
                     @endif
                 </td>
                 @if (Auth::user()->perfil == 1 && ($estudio == 4 || $estudio == 5))
@@ -300,11 +304,12 @@ Versión 4
             </div>
             <!-- Add margin if you want to see some of the overlay behind the modal-->
             <div class="modal-content py-4 text-left px-6">
+                @if(!empty($datosModal['ruta']) && $datosModal['ruta'] != "detalles")
                 <form class="w-full" method="POST" action="{{ $modalVisible ? route('evaluacion.' . $datosModal['ruta'] , [$datosModal['id']]) : '#' }}">
                     {{--            <form class="w-full" method="POST" action="{{ route('evaluacion.cambiar_ejecutivo', [$modal['evaluacion_id']]) }}">--}}
                     @csrf
                     <input type="hidden" name="modal_evaluacion_id" value="{{ $modalVisible ? $datosModal['id'] : '' }}">
-
+                @endif
                     <!--Title-->
                     <div class="flex justify-between items-center pb-3">
                         <p class="text-base font-bold mb-4 text-2xl">{{ $modalVisible ? $datosModal['titulo'] : '' }}</p>
@@ -391,7 +396,7 @@ Versión 4
 
                     @elseif(!empty($datosModal['ruta']) && $datosModal['ruta'] == "reportar_grabacion")
 
-                        <div>
+                        <div>                            
                             <div class="form-check">
                                 <input onchange="validarReportarGrabacion()" wire:model.defer="datosModal.estadoGrabacion" class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="estadoGrabacion" value="ok" id="sin_problemas">
                                 <label class="form-check-label inline-block text-gray-800" for="sin-problemas">
@@ -411,7 +416,18 @@ Versión 4
                                 </label>
                             </div>
 
-                            <div class="ml-10 mt-4">
+                            <div class="form-check">
+                                <input onchange="validarReportarGrabacion()" wire:model.defer="datosModal.estadoGrabacion" class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="estadoGrabacion" value="comentario" id="comentario" >
+                                <label class="form-check-label inline-block text-gray-800" for="comentario">
+                                    Comentario
+                                </label>
+                            </div>
+
+                            <div class="ml-10 mt-4 flex-row">
+                                
+                                <div id="ta_comentario" class="flex form-check flex-row pg @if($datosModal['estadoGrabacion'] !== "comentario") hidden @endif">
+                                    <textarea onchange="validarReportarGrabacion()" class="w-full mb-4 pg-cb form-check-input appearance-none rounded-md border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" name="comentario_estado" id="comentario_estado">{{ $datosModal['comentario_estado'] }}</textarea>
+                                </div>
                                 <div id="pg_problema_duracion" class="form-check pg @if($datosModal['estadoGrabacion'] !== "problema") hidden @endif">
                                     <input onchange="validarReportarGrabacion()" wire:model.defer="datosModal.problemaGrabacion" class="pg-cb form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="problemaGrabacion" value="duracion" id="problema_duracion">
                                     <label class="pg-label form-check-label inline-block text-gray-800" for="problema-duracion">
@@ -430,36 +446,73 @@ Versión 4
                                         No se entiende
                                     </label>
                                 </div>
-                            </div>
-
-                            <div class="form-check">
-                                <input onchange="validarReportarGrabacion()" wire:model.defer="datosModal.estadoGrabacion" class="form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 mt-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 cursor-pointer" type="radio" name="estadoGrabacion" value="descartada" id="evaldescartada" >
-                                <label class="form-check-label inline-block text-gray-800" for="evaldescartada">
-                                    Descartada por:
-                                </label>
-                            </div>
-
-                            <div class="ml-10 mt-4">
-                                <div id="comentario_descartada" class="form-check pg ">
-                                    <textarea id="comentario_desc" name="comentario_desc" wire:model.defer="datosModal.comentario_interno" rows="3" class="shadow-sm focus:ring-indigo-500 focus:border-indigo-500 mt-1 h-30 block w-full sm:text-sm border-gray-300 rounded-md disabled:opacity-50"></textarea>
-                                </div>
-                                
-                            </div>
+                            </div>                            
                             
 
                         </div>
+                    @elseif(!empty($datosModal['ruta']) && $datosModal['ruta'] == "detalles")
+
+                                        <div class="overflow-hidden bg-white shadow sm:rounded-lg">
+                                            <div class="border-t border-gray-200">
+                                                <dl>
+                                                    <div class="bg-gray-50 px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                        <dt class="text-sm font-medium text-gray-500">Móvil</dt>
+                                                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ $datosModal['movil'] }}</dd>
+                                                    </div>
+                                                    <div class="bg-white px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                        <dt class="text-sm font-medium text-gray-500">CONNID</dt>
+                                                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ $datosModal['connid'] }}</dd>
+                                                    </div>
+                                                    <div class="bg-gray-50 px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                        <dt class="text-sm font-medium text-gray-500">Fecha Grabación</dt>
+                                                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ $datosModal['fecha_grabacion'] }}</dd>
+                                                    </div>
+                                                    <div class="bg-white px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                        <dt class="text-sm font-medium text-gray-500">Nombre Ejecutivo</dt>
+                                                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ $datosModal['nombre_ejecutivo'] }}</dd>
+                                                    </div>
+                                                    <div class="bg-gray-50 px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                        <dt class="text-sm font-medium text-gray-500">RUT Ejecutivo</dt>
+                                                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ $datosModal['rut_ejecutivo'] }}</dd>
+                                                    </div>
+                                                    <div class="bg-white px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                        <dt class="text-sm font-medium text-gray-500">Nombre Supervisor</dt>
+                                                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ $datosModal['nombre_supervisor'] }}</dd>
+                                                    </div>
+                                                    <div class="bg-gray-50 px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                        <dt class="text-sm font-medium text-gray-500">RUT Supervisor</dt>
+                                                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ $datosModal['rut_supervisor'] }}</dd>
+                                                    </div>
+                                                    <div class="bg-white px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                        <dt class="text-sm font-medium text-gray-500">Descripción del caso</dt>
+                                                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ $datosModal['c_descripcion_caso'] }}</dd>
+                                                    </div>
+                                                    <div class="bg-gray-50 px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                        <dt class="text-sm font-medium text-gray-500">Respuesta del ejecutivo</dt>
+                                                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ $datosModal['c_respuesta_ejecutivo'] }}</dd>
+                                                    </div>
+                                                    <div class="bg-white px-4 py-2 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                                                        <dt class="text-sm font-medium text-gray-500">Retroalimentación</dt>
+                                                        <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ $datosModal['c_retroalimentacion'] }}</dd>
+                                                    </div>
+                                                </dl>
+                                            </div>
+                                        </div>
 
                     @endif
 
                     <!--Footer-->
                     <div class="space-x-2 flex justify-end pt-2">
                         <button wire:click.prevent="render" wire:click="cerrarModalCompletar" type="button" class="px-3 bg-red-500 py-1.5 rounded-lg text-white hover:bg-indigo-400">Cancelar</button>
+                        @if(!empty($datosModal['ruta']) && $datosModal['ruta'] != "detalles")
                         <button id="modal_completar_guardar" type="submit" class="@if($modalOK) guardar-activo @else guardar-inactivo @endif px-3 bg-green-500 py-1.5 rounded-lg text-white hover:bg-green-400" @if(!$modalOK) disabled @endif >Guardar</button>
                         {{--                    <button id="cambiar_ejecutivo_guardar" type="submit" class="px-3 bg-green-500 py-1.5 rounded-lg text-white hover:bg-green-400 @if($modal['nombre_ejecutivo']) guardar-activo @else guardar-inactivo @endif" @if(!$modal['nombre_ejecutivo']) disabled @endif>Guardar</button>--}}
+                        @endif
                     </div>
 
-
+                @if(!empty($datosModal['ruta']) && $datosModal['ruta'] != "detalles")
                 </form>
+                @endif
             </div>
             <script>
 
@@ -467,6 +520,12 @@ Versión 4
 
 
                 function desmarcarHijos() {
+                    document.getElementById("problema_duracion").checked = false;
+                    document.getElementById("problema_incompleto").checked = false;
+                    document.getElementById("problema-inaudible").checked = false;
+                }
+
+                function desmarcarHijosComentario() {
                     document.getElementById("problema_duracion").checked = false;
                     document.getElementById("problema_incompleto").checked = false;
                     document.getElementById("problema-inaudible").checked = false;
@@ -484,37 +543,36 @@ Versión 4
                     document.getElementById("pg_problema_inaudible").classList.remove('hidden');
                 }
 
-                function vaciasComentario() {
-                    document.getElementById("descartada") = null;    
+                function mostrarHijosComentario() {
+                    document.getElementById("ta_comentario").classList.remove('hidden');
                 }
 
-                function esconderComentario() {
-                    document.getElementById("comentario_descartada").classList.add('hidden');
-                   
-                }
+                function esconderHijosComentario() {
+                    document.getElementById("ta_comentario").classList.add('hidden');                }
 
-                function mostrarComentario() {
-                    document.getElementById("comentario_descartada").classList.remove('hidden');
-                    
-                }
+                             
 
                 function validarReportarGrabacion() {
                     if (document.getElementById("sin_problemas").checked || document.getElementById("no_existe").checked) {
                         desmarcarHijos();
                         esconderHijos();
+                        esconderHijosComentario();
                         activarGuardarModalCompletar();
                     } else if (document.getElementById("no_evaluable").checked) {
+                        esconderHijosComentario();
                         if (document.getElementById("problema_duracion").checked || document.getElementById("problema_incompleto").checked || document.getElementById("problema-inaudible").checked) {
                             activarGuardarModalCompletar();
                         } else {
                             mostrarHijos();
                             desactivarGuardarModalCompletar();
                         }
-                    } else if (document.getElementById("evaldescartada").checked) {
-                        if (document.getElementById("comentario_descartada")) {
+                    } else if (document.getElementById("comentario").checked) {
+                        desmarcarHijos();
+                        esconderHijos();
+                        mostrarHijosComentario();
+                        if (document.getElementById("comentario_estado").value !== "" ) {
                             activarGuardarModalCompletar();
                         } else {
-                            mostrarComentario();
                             desactivarGuardarModalCompletar();
 
                         }

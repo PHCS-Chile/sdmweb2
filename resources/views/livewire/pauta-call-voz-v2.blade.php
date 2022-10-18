@@ -503,19 +503,12 @@ Versión en esteroides
 
                                
 
-                                @include('componentes.formularios.pauta_radio', [
+                                @include('componentes.formularios.pauta_select', [
                                     'titulo' => 'Motivo del Llamado',
                                     'atributo_id' => 597,
                                     'name' => 'motivo',
                                     'opciones' => $escalas['motivo']['escalas']
-                                ])
-
-                                @include('componentes.formularios.pauta_select', [
-                                    'titulo' => 'Tipo de Negocio',
-                                    'atributo_id' => 598,
-                                    'name' => 'tipo_negocio',
-                                    'opciones' => $escalas['tiposnegocio']['escalas']
-                                ])
+                                ])                                
 
                                 @include('componentes.formularios.pauta_select', [
                                     'titulo' => 'Tipo de Gestión',
@@ -670,8 +663,26 @@ Versión en esteroides
 
                                        
                                     </div>
-                                </div>                                
+                                </div>   
+                                <div class="pt-6"></div>
+                                <div class="shadow overflow-hidden sm:rounded-md">
+                                    <div class="px-4 py-5 bg-blue-50 space-y-6 sm:p-6">
+                                        <p class="font-bold text-xl">Caracterización Complementaria</p>
+                                        <fieldset>
+
+                                            @include('componentes.formularios.pauta_select', [
+                                                'titulo' => 'Tipo de Negocio',
+                                                'atributo_id' => 598,
+                                                'name' => 'tipo_negocio',
+                                                'opciones' => $escalas['tiposnegocio']['escalas']
+                                            ])
+
+                                        </fieldset>
+                                    </div>
+                                </div>                             
                             </div>
+                            
+                                
 
                         </div>
 

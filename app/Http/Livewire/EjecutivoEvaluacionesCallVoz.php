@@ -34,7 +34,7 @@ class EjecutivoEvaluacionesCallVoz extends Component
     public $modalVisible = false;
     public $modalOK = false;
     public $datosModal = [];
-    public $modalesValidos = ["cambiar_ejecutivo", "completar", "reportar_grabacion"];
+    public $modalesValidos = ["cambiar_ejecutivo", "completar", "reportar_grabacion", "detalles"];
     public $problemaGrabacion;
 
 
@@ -75,10 +75,13 @@ class EjecutivoEvaluacionesCallVoz extends Component
             }
             elseif ($modal == "reportar_grabacion") {
                 $this->datosModal['titulo'] = "Reportar problemas con la grabación";
+                $this->datosModal['comentario_estado'] = $evaluacion->comentario_estado;
                 if ($evaluacion->estado_conversacion == 9) {
                     $this->datosModal['estadoGrabacion'] = "inexistente";
                 } elseif (in_array($evaluacion->estado_conversacion, [14, 15, 16])) {
                     $this->datosModal['estadoGrabacion'] = "problema";
+                } elseif ($evaluacion->estado_id = 6 && $evaluacion->comentario_estado) {
+                    $this->datosModal['estadoGrabacion'] = "comentario";
                 } else {
                     $this->datosModal['estadoGrabacion'] = "ok";
                 }
@@ -93,6 +96,19 @@ class EjecutivoEvaluacionesCallVoz extends Component
 //                    }
 //                }
 //                $this->modalOK = $this->problemaGrabacion == "inexistente";
+            } elseif ($modal == "detalles") {
+                $this->datosModal['titulo'] = "Detalles de la evaluación";
+                $this->datosModal['ruta'] = "detalles";
+                $this->datosModal['movil'] = $evaluacion->movil;
+                $this->datosModal['connid'] = $evaluacion->connid;
+                $this->datosModal['fecha_grabacion'] = $evaluacion->fecha_grabacion;
+                $this->datosModal['nombre_ejecutivo'] = $evaluacion->nombre_ejecutivo;
+                $this->datosModal['rut_ejecutivo'] = $evaluacion->rut_ejecutivo;
+                $this->datosModal['nombre_supervisor'] = $evaluacion->nombre_supervisor;
+                $this->datosModal['rut_supervisor'] = $evaluacion->rut_supervisor;
+                $this->datosModal['c_descripcion_caso'] = $evaluacion->c_descripcion_caso;
+                $this->datosModal['c_respuesta_ejecutivo'] = $evaluacion->c_respuesta_ejecutivo;
+                $this->datosModal['c_retroalimentacion'] = $evaluacion->c_retroalimentacion;
             }
         }
     }

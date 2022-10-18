@@ -465,6 +465,13 @@ abstract class PautaBase extends Component
 
             $this->calcularPECSimple($atributosCriticos, $atributosCriticosLeves, $atributosCriticosIntermedios, $atributosCriticosGraves);
 
+        } elseif ($this->tipoPuntaje == 'CallVoz') {
+
+            $atributosPECU = $evaluacion->atributos()->wherein('id', [543, 544, 545, 546, 547, 548, 549, 550, 554, 555, 556, 557, 558, 559, 560, 561, 565, 566, 567, 568, 569, 570, 571, 572, 592, 594]);
+            $atributosPECN = $evaluacion->atributos()->wherein('id', [576, 577, 578, 579, 580, 581, 582, 583, 584, 593, 595, 596]);
+            $atributosPECC = $evaluacion->atributos()->wherein('id', [586, 587, 588, 589, 590]);
+
+            $this->calcularPECVoz($atributosPECU, $atributosPECN, $atributosPECC);
         }
         if ($this->tipoPuntaje == 'ReclamosRetenciones'){
             $this->evaluacion['penc'] = $this->calcularPENC(
@@ -577,7 +584,7 @@ abstract class PautaBase extends Component
         $sumaPonderadoresAplican = 0;
         $sumaPonderadoresMarcados = 0;
         $respuestas = [];
-        $ponderadores = [];
+        $ponderadores = [];        
         foreach ($atributosPENC as $atributo) {
             $respuesta = $this->respuestas[$atributo->id];
             $respuestas[$atributo->id] = $respuesta;
@@ -589,6 +596,7 @@ abstract class PautaBase extends Component
                 $sumaPonderadoresMarcados += intval($atributo->ponderador);
             }
         }        
+        
         return 100 * ($sumaPonderadoresMarcados / $sumaPonderadoresAplican);
     }
 
@@ -679,6 +687,28 @@ abstract class PautaBase extends Component
         }
     }
 
+    public function calcularPECVoz($atributosPECU, $atributosPECN, $atributosPECC)
+    {
+        $this->evaluacion['pecu'] = 100;
+        $this->evaluacion['pecn'] = 100;
+        $this->evaluacion['pecc'] = 100;
+        foreach ($atributosPECU as $atributo) {            
+            if ($this->respuestas[$atributo->id] == 'checked') {
+                $this->evaluacion['pecu'] = 0;
+            }
+        }
+        foreach ($atributosPECN as $atributo) {            
+            if ($this->respuestas[$atributo->id] == 'checked') {
+                $this->evaluacion['pecn'] = 0;
+            }
+        }
+        foreach ($atributosPECC as $atributo) {            
+            if ($this->respuestas[$atributo->id] == 'checked') {
+                $this->evaluacion['pecc'] = 0;
+            }
+        }
+    }
+
 
     /**
      * PEC Padres
@@ -709,7 +739,7 @@ abstract class PautaBase extends Component
     public function actualizarEstados()
     {
         $evaluacion = Evaluacion::find($this->evaluacion_id);
-
+        
         // Si tiene estado 1 o 20 guarda a quien completa la evaluación
         if ($evaluacion->enBlanco()) {
             $evaluacion->user_completa = Auth::user()->name;
@@ -737,9 +767,19 @@ abstract class PautaBase extends Component
                 if($evaluacion->estado_reporte == NULL){
                     $evaluacion->estado_reporte = Estado::REPORTE_SIN_REPORTE;
                 }
+            }elseif($evaluacion->getPauta()->id == 6){
+                if($evaluacion->pecu == 0 || $evaluacion->pecn == 0 || $evaluacion->pecc == 0){
+                    $evaluacion->cambiarEstado(Estado::EVALUACION_ENVIADADA_A_REVISION);
+                    if($evaluacion->estado_reporte == NULL){
+                        $evaluacion->estado_reporte = Estado::REPORTE_SIN_REPORTE;
+                    }
+                }else{
+                    $evaluacion->cambiarEstado(Estado::EVALUACION_COMPLETA);
+                }
             }else{
                 $evaluacion->cambiarEstado(Estado::EVALUACION_COMPLETA);
             }
+            
         }
         $evaluacion->save();
     }
