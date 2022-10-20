@@ -32,6 +32,7 @@ class PautasEstudiosSeeder extends Seeder
         ['name' => 'VentasRemotas', 'descripcion' => 'Pauta Ventas Remotas'],
         ['name' => 'BackOffice', 'descripcion' => 'Pauta Back Office'],
         ['name' => 'Retenciones', 'descripcion' => 'Pauta Retenciones'],
+        ['name' => 'CallVoz 4.0', 'descripcion' => 'Pauta Call Center Voz'],
     ];
 
     /**
@@ -39,7 +40,7 @@ class PautasEstudiosSeeder extends Seeder
      */
     private $estudios = [
         ['name' => 'EPCS Call Center Canales Digitales', 'pauta_id' => 1, 'navegacion' => 'ejecutivos'],
-        ['name' => 'EPCS Call Center Voz', 'pauta_id' => 2, 'navegacion' => 'directo'],
+        ['name' => 'EPCS Call Center Voz', 'pauta_id' => 6, 'navegacion' => 'directo'],
         ['name' => 'EPCS Ventas Remotas', 'pauta_id' => 3, 'navegacion' => 'directo'],
         ['name' => 'Back Office', 'pauta_id' => 4, 'navegacion' => 'ejecutivos'],
         ['name' => 'Call Center Retenciones', 'pauta_id' => 5, 'navegacion' => 'ejecutivos'],

@@ -98,6 +98,12 @@ class EscalasSeeder extends Seeder
         ['id' => 81, 'grupo_id' => 9, 'descripcion' => 'Motivo del llamado', 'value' => 1, 'name' => 'Reclamo', 'isActive' => 1],
         ['id' => 82, 'grupo_id' => 9, 'descripcion' => 'Motivo del llamado', 'value' => 2, 'name' => 'Consulta', 'isActive' => 1],
         ['id' => 83, 'grupo_id' => 9, 'descripcion' => 'Motivo del llamado', 'value' => 3, 'name' => 'Requerimiento', 'isActive' => 1],
+        ['id' => 84, 'grupo_id' => 10, 'descripcion' => 'Motivo del llamado 2', 'value' => 1, 'name' => 'Consultar', 'isActive' => 1],
+        ['id' => 85, 'grupo_id' => 10, 'descripcion' => 'Motivo del llamado 2', 'value' => 2, 'name' => 'Contratar nuevos servicios', 'isActive' => 1],
+        ['id' => 86, 'grupo_id' => 10, 'descripcion' => 'Motivo del llamado 2', 'value' => 3, 'name' => 'Reclamar', 'isActive' => 1],
+        ['id' => 87, 'grupo_id' => 10, 'descripcion' => 'Motivo del llamado 2', 'value' => 4, 'name' => 'Renunciar', 'isActive' => 1],
+        ['id' => 88, 'grupo_id' => 10, 'descripcion' => 'Motivo del llamado 2', 'value' => 5, 'name' => 'Solicitar modificación', 'isActive' => 1],
+
     ];
 
 }

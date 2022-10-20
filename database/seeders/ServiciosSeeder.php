@@ -38,6 +38,8 @@ class ServiciosSeeder extends Seeder
         ['name' => 'Konecta', 'pais' => 'Perú', 'status' => 1, 'estudio_id' => 4],
         ['name' => 'Stic', 'pais' => 'Chile', 'status' => 1, 'estudio_id' => 4],
         ['name' => 'SCCP', 'pais' => 'Perú', 'status' => 1, 'estudio_id' => 5],
+        ['name' => 'Konecta Colombia', 'pais' => 'Colombia', 'status' => 1, 'estudio_id' => 3],
+        ['name' => 'B12', 'pais' => 'Perú', 'status' => 1, 'estudio_id' => 3],
     ];
 
 }
