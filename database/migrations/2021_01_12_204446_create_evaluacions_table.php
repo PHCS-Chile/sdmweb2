@@ -61,7 +61,6 @@ class CreateEvaluacionsTable extends Migration
             $table->unsignedInteger('nivel_ec')->nullable();// 1 = Error Leve - 2 = Error Medio - 3 = Error Grave
             $table->string('tipo_gestion')->nullable();
             $table->string('sub_estudio')->nullable();
-            $table->decimal('pf', 4, 1)->nullable();
             $table->text('c_descripcion_caso')->nullable();
             $table->text('c_respuesta_ejecutivo')->nullable();
             $table->text('c_retroalimentacion')->nullable();

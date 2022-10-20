@@ -23,7 +23,7 @@ class CreateAsignacionsTable extends Migration
             $table->unsignedBigInteger('agente_id')->nullable();
             $table->unsignedBigInteger('periodo_id')->nullable();
             $table->unsignedBigInteger('estudio_id')->nullable();
-            $table->string('subestudio');
+            $table->string('subestudio')->nullable();
             $table->foreign('agente_id')->references('id')->on('agentes')->onDelete('set null');
             $table->foreign('periodo_id')->references('id')->on('periodos')->onDelete('set null');
             $table->foreign('estudio_id')->references('id')->on('estudios')->onDelete('set null');
