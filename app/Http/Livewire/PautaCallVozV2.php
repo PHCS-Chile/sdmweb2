@@ -36,6 +36,8 @@ class PautaCallVozV2 extends PautaBase
             $cambios[] = [559, ""];
             $cambios[] = [560, ""];
             $cambios[] = [561, ""];
+        }elseif(!$this->respuestas[553]) {
+            $cambios[] = [553, "Si"];        
         }
         if (!$this->respuestas[573]) {
             $cambios[] = [574, ""];
@@ -48,6 +50,8 @@ class PautaCallVozV2 extends PautaBase
             $cambios[] = [570, ""];
             $cambios[] = [571, ""];
             $cambios[] = [572, ""];
+        }elseif(!$this->respuestas[564]) {
+            $cambios[] = [564, "Si"];  
         }
         
 
