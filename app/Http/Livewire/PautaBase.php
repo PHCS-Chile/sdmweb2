@@ -521,9 +521,11 @@ abstract class PautaBase extends Component
         } else {
             if ($pecc == 0 && $pecn == 0) {
                 return 2;
+            } elseif ($pecc == 0 || $pecn == 0) {
+                return 1;
             }
         }
-        return 1;
+        return null;
     }
 
 
